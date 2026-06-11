@@ -195,6 +195,7 @@ public final class QuestProgressFile {
 
     /**
      * Gets the remaining cooldown before being able to start a specific quest.
+     * The cooldown start date depends on the quest cooldown mode.
      *
      * @param quest the quest to test for
      * @return {@code 0} if no cooldown remaining, {@code -1} if the cooldown is disabled or the quest is not completed,
@@ -211,8 +212,11 @@ public final class QuestProgressFile {
             return -1;
         }
 
-        final long completionDate = questProgress.getCompletionDate();
-        if (completionDate == 0L) {
+        final long cooldownStartDate = switch (quest.getCooldownMode()) {
+            case COMPLETION -> questProgress.getCompletionDate();
+            case ACCEPTANCE -> questProgress.getStartedDate();
+        };
+        if (cooldownStartDate == 0L) {
             return -1;
         }
 
@@ -220,7 +224,7 @@ public final class QuestProgressFile {
         final long cooldownMillis = TimeUnit.MILLISECONDS.convert(quest.getCooldown(), TimeUnit.MINUTES);
 
         // do the subtraction first to prevent overflow
-        return Math.max(0L, completionDate - currentTimeMillis + cooldownMillis);
+        return Math.max(0L, cooldownStartDate - currentTimeMillis + cooldownMillis);
     }
 
     /**

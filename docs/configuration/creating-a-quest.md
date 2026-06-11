@@ -418,8 +418,11 @@ options:
   
 *`options.cooldown`*
 
-**Optional.** Whether ot not the quest is placed on cooldown or is
-immediately replayable.
+**Optional.** Whether or not the quest is placed on cooldown or is
+immediately replayable. By default, cooldown starts when the quest is
+completed. Set `mode` to `acceptance` to start the cooldown timer when
+the quest is accepted; this still only blocks replay after the quest is
+completed.
 
 ``` yaml
 options:
@@ -427,6 +430,7 @@ options:
   cooldown:
     enabled: true
     time: 1440     # minutes
+    mode: completion # completion or acceptance
 ```
 
 ### Time limit

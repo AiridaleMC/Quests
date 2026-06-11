@@ -291,6 +291,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                         int cooldownTime = config.getInt("options.cooldown.time", 10);
                         int timeLimtTime = config.getInt("options.time-limit.time", 10);
                         int sortOrder = config.getInt("options.sort-order", 1);
+                        String cooldownMode = config.getString("options.cooldown.mode", "completion");
                         String category = config.getString("options.category");
                         Map<String, String> placeholders = new HashMap<>();
                         Map<String, String> progressPlaceholders = new HashMap<>();
@@ -301,6 +302,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                             repeatable = true;
                             cooldown = true;
                             cooldownTime = 0;
+                            cooldownMode = "completion";
                             requirements = Collections.emptyList();
                             permissionRequired = false;
                         }
@@ -319,6 +321,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                                 .withPlaceholders(placeholders)
                                 .withProgressPlaceholders(progressPlaceholders)
                                 .withCooldown(cooldownTime)
+                                .withCooldownMode(Quest.CooldownMode.fromConfigValue(cooldownMode))
                                 .withTimeLimit(timeLimtTime)
                                 .withSortOrder(sortOrder)
                                 .withCooldownEnabled(cooldown)

@@ -29,6 +29,7 @@ public class Quest implements Comparable<Quest> {
     private boolean repeatEnabled;
     private boolean cooldownEnabled;
     private int cooldown;
+    private CooldownMode cooldownMode;
     private boolean timeLimitEnabled;
     private int timeLimit;
     private int sortOrder;
@@ -235,7 +236,7 @@ public class Quest implements Comparable<Quest> {
     }
 
     /**
-     * Get if this quest has a cooldown enabled after completion.
+     * Get if this quest has a cooldown enabled.
      * Whether or not the quest enters a cooldown phase for the player depends
      * on if it is repeatable in the first place: {@link Quest#isRepeatable()}
      *
@@ -246,13 +247,22 @@ public class Quest implements Comparable<Quest> {
     }
 
     /**
-     * Get the cooldown for this quest between completing and restarting the quest.
+     * Get the cooldown for this quest before restarting the quest.
      * Whether or not this cooldown is in use depends on {@link Quest#isCooldownEnabled()}.
      *
      * @return the cooldown, in minutes
      */
     public int getCooldown() {
         return cooldown;
+    }
+
+    /**
+     * Get when the cooldown starts counting down for this quest.
+     *
+     * @return the cooldown mode
+     */
+    public @NotNull CooldownMode getCooldownMode() {
+        return cooldownMode;
     }
 
     /**
@@ -384,6 +394,7 @@ public class Quest implements Comparable<Quest> {
         private boolean repeatEnabled = false;
         private boolean cooldownEnabled = false;
         private int cooldown = 0;
+        private CooldownMode cooldownMode = CooldownMode.COMPLETION;
         private boolean timeLimitEnabled = false;
         private int timeLimit = 0;
         private int sortOrder = 1;
@@ -458,6 +469,11 @@ public class Quest implements Comparable<Quest> {
 
         public Builder withCooldown(int cooldown) {
             this.cooldown = cooldown;
+            return this;
+        }
+
+        public Builder withCooldownMode(CooldownMode cooldownMode) {
+            this.cooldownMode = Objects.requireNonNull(cooldownMode, "cooldownMode cannot be null");
             return this;
         }
 
@@ -542,6 +558,7 @@ public class Quest implements Comparable<Quest> {
             quest.repeatEnabled = this.repeatEnabled;
             quest.cooldownEnabled = this.cooldownEnabled;
             quest.cooldown = this.cooldown;
+            quest.cooldownMode = this.cooldownMode;
             quest.timeLimitEnabled = this.timeLimitEnabled;
             quest.timeLimit = this.timeLimit;
             quest.sortOrder = this.sortOrder;
@@ -555,6 +572,15 @@ public class Quest implements Comparable<Quest> {
             quest.progressPlaceholders = this.progressPlaceholders;
             quest.categoryid = this.categoryid;
             return quest;
+        }
+    }
+
+    public enum CooldownMode {
+        COMPLETION,
+        ACCEPTANCE;
+
+        public static @NotNull CooldownMode fromConfigValue(@Nullable String value) {
+            return value != null && value.trim().equalsIgnoreCase("acceptance") ? ACCEPTANCE : COMPLETION;
         }
     }
 }

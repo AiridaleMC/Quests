@@ -62,5 +62,8 @@ options:
     enabled: true
     # Time (in minutes)
     time: 1440
+    # The cooldown starts when the quest is completed by default.
+    # Set to "acceptance" to start counting down when the quest is accepted.
+    mode: completion
   # This is the relative position in the GUI
   sort-order: 1
